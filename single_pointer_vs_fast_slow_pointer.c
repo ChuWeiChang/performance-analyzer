@@ -114,7 +114,9 @@ int main(int argc, char *argv[]) {
             mid = middle_node_onepass(head);
         }
     }
-    
+    if (mid) {
+        volatile int dummy = mid->val; 
+    }
     free_list(head);
     return 0;
 }
