@@ -28,4 +28,4 @@ I set `<length>` = 2500 to better show the difference in cache misses, since my 
 
 To run the program using the one-pass algorithm on a linked list with 50,000 nodes:
 
-    ./list_middle 1 50000
+    ./test 1 2500
