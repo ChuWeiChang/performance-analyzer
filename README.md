@@ -23,7 +23,6 @@ Run the compiled executable with two arguments: `mode` and `length`.
     * `1`: Runs the One-pass (slow/fast pointers) algorithm.
 * `<length>`: The number of nodes in the generated linked list (e.g., 1000, 100000).
 
-For a 4kb page size system it is recommened to set `<length>` > 500 to better show the difference in cache misses.
 ### Example
 
 To run the program using the one-pass algorithm on a linked list with 50,000 nodes:
