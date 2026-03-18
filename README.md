@@ -1,33 +1,69 @@
-# Linked List Middle Finder
+# Performance Analyzer
 
-This program evaluates the performance of finding the middle node of a singly linked list using two different algorithms: a two-pass approach and a one-pass (slow/fast pointer) approach. 
+This repository contains C microbenchmarks for comparing algorithm and CPU behavior under different code patterns.
 
-The program generates a linked list of a specified length, randomly shuffles the node memory locations to simulate cache-miss scenarios, and runs the chosen algorithm 1000 times.
+## Benchmarks
 
-## Compilation
+### 1) Linked List Middle Finder
 
-Compile the C file using standard GCC:
+File: `single_pointer_vs_fast_slow_pointer.c`
 
-    gcc -O3 -o test single_pointer_vs_fast_slow_pointer.c 
+Compares two ways to find the middle of a singly linked list:
 
-## Usage
+- Two-pass approach (count first, then walk again)
+- One-pass approach (slow/fast pointers)
 
-Run the compiled executable with two arguments: `mode` and `length`.
+The program builds a linked list of the requested length, shuffles node memory locations to increase cache pressure, and runs the selected algorithm repeatedly.
+
+#### Compile
+
+    gcc -O2 -o test single_pointer_vs_fast_slow_pointer.c
+
+#### Run
 
     sudo perf stat -e instructions,cycles,L1-dcache-loads,L1-dcache-misses ./test <mode> <length>
 
-### Arguments
+Arguments:
 
-* `<mode>`: Determines the algorithm used to find the middle node.
-    * `0`: Runs the Two-pass algorithm.
-    * `1`: Runs the One-pass (slow/fast pointers) algorithm.
-* `<length>`: The number of nodes in the generated linked list (e.g., 1000, 100000).
+- `<mode>`:
+  - `0` = two-pass
+  - `1` = one-pass (slow/fast)
+- `<length>`: number of nodes (for example `2500`, `100000`)
 
-I set `<length>` = 2500 to better show the difference in cache misses, since my l1 cache is 32kb.
-
-Set `<length>` > 5000 would drastically increase miss rate. At `<length>` around 30000, the miss rate hit an ceiling about 90 %.
-### Example
-
-To run the program using the one-pass algorithm on a linked list with 50,000 nodes:
+Example:
 
     ./test 1 2500
+
+### 2) Branching vs Branchless Sum
+
+File: `branch_vs_branchless.c`
+
+Compares two ways to compute the sum of absolute values over a large integer array:
+
+- Branching version: `if (x < 0) ...`
+- Branchless version: bitwise sign-mask transform
+
+The dataset is filled with random positive/negative values to make branch outcomes hard to predict.
+
+#### Compile
+
+    gcc -O2 -o bench branch_vs_branchless.c
+
+#### Run
+
+    ./bench <mode>
+
+Arguments:
+
+- `<mode>`:
+  - `b` = branching
+  - `l` = branchless
+
+Examples:
+
+    ./bench b
+    ./bench l
+
+Measure branch behavior with `perf`:
+
+    sudo perf stat -e branches,branch-misses,cycles,instructions ./bench b
